@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Showy</title>
+  <link href="showy.css" rel="stylesheet">
+</head>
+<body>
+<div id="picker">
+  <span id="title"><abbr title="Showy, your flamboyant image viewer on the Web.">Showy</abbr></span>
+  <input type="file" accept="image/*" multiple>
+  <button id="back" hidden>&uarr; Back</button>
+  <button id="prev" hidden>&larr; Prev</button>
+  <button id="next" hidden>Next &rarr;</button>
+  <input type="range" step="1" hidden>
+  <span id="metadata"></span>
+  <span id="info" hidden></span>
+</div>
+<div id="dropzone"></div>
+<div id="thumbnails"></div>
+<div id="preview" hidden></div>
+<script src="showy.js"></script>
+</body>
+</html>
