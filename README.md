@@ -22,3 +22,4 @@ Showy, your flamboyant image viewer on the Web.
 * make thumbnails square shaped (if image ratios differ)
 * load images in batches to display them progressively
 * extract and show EXIF metadata
+* move elements with translate() instead of pos:abs top/left ([source](http://paulirish.com/2012/why-moving-elements-with-translate-is-better-than-posabs-topleft/))
