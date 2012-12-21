@@ -1,8 +1,11 @@
+html {
+  background-color: gray;
+}
+
 body {
   margin: 0;
   padding: 0;
   font: 0.8em/1.7 Arial;
-  background-color: gray;
   overflow-y: scroll;
   overflow-x: hidden;
 }
@@ -85,16 +88,17 @@ input[type=range] {
 #preview {
   position: absolute;
   top: 30px;
+  left: 0px;
 }
 
 #thumbnails > img {
-  -webkit-transition: all 0.2s ease-in-out;
-  transition: all 0.2s ease-in-out;
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 #preview > img {
-  -webkit-transition: all 0.2s ease-in-out;
-  transition: all 0.2s ease-in-out;
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 abbr {

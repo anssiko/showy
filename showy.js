@@ -3,7 +3,8 @@
 function q() { return document.querySelector.apply(document, arguments); }
 function qa() { return document.querySelectorAll.apply(document, arguments); }
 
-var input = q('input[type=file]'),
+var body = q('body'),
+    input = q('input[type=file]'),
     thumbnails = q('#thumbnails'),
     preview = q('#preview'),
     range = q('input[type=range]'),
@@ -46,7 +47,8 @@ function showThumbnails() {
   prev_button.hidden = true;
   next_button.hidden = true;
   back_button.hidden = true;
-
+  
+  resetBodyDimensions();
   addThumbnailsKeyBindings();
 
   if (q('#preview > img')) {
@@ -107,6 +109,8 @@ function minimizeImage(img) {
   
   var next_img = q('img[data-index="' + (parseInt(img.dataset.index, 10) + 1) + '"]');
   
+  // TODO prefixes
+  img.style.webkitTransform = 'scale(1)';
   img.style.width = '25%';
   img.style.marginLeft = '';
   img.style.marginTop = '';
@@ -150,15 +154,13 @@ function initRange(img) {
     range.hidden = true;
     console.info('<input type="range"> not supported, zoom disabled.');
   }
-  
-  var value = 100 * window.innerWidth / img.dataset.width,
-      max = 100 * img.dataset.width / window.innerWidth / 2;
-  
+
   img.style.width = '100%';
 
   range.min = 10;
-  range.value = value;
-  range.max = 150;
+  range.value = 100;
+  range.max = 200;
+
   info.textContent = '';
 }
 
@@ -231,6 +233,8 @@ function showPrevImage() {
   if (current && prev) {
     minimizeImage(current);
     enlargeImage(prev);
+    range.value = 100;
+    info.textContent = '';
   }
 
   if (prev) {
@@ -251,6 +255,8 @@ function showNextImage() {
   if (current && next) {
     minimizeImage(current);
     enlargeImage(next);
+    range.value = 100;
+    info.textContent = '';
   }
   
   if (next) {
@@ -260,6 +266,12 @@ function showNextImage() {
     metadata.textContent = getMetadata(next);
   }
   
+}
+
+function resetBodyDimensions() {
+  body.style.paddingBottom = '0px';
+  body.style.width = '100%';
+  body.style.overflowX = 'hidden';
 }
 
 function addPreviewKeyBindings() {
@@ -342,18 +354,33 @@ function enterFullscreen(el) {
 range.onchange = function () {
   var img = q('#preview > img'),
       iWidth = window.innerWidth,
-      iHeight = window.innerHeight;
-      
-  img.style.width = (this.value / 100) * q('#preview > img').dataset.width + 'px';
+      iHeight = window.innerHeight,
+      imgRatio = (img.dataset.width / img.dataset.height);
+
+  var imgCurrentWidth = (img.dataset.width > iWidth) ?
+      Math.round(iWidth * (range.value / 100)) :
+      Math.round(img.dataset.width * (range.value / 100));
+
+  var imgCurrentHeight = (img.dataset.height > iHeight) ?
+      Math.round(iWidth/imgRatio * (range.value / 100)) :
+      Math.round(img.dataset.height * (range.value / 100));
+
+  var paddingLeft = (img.getBoundingClientRect().left < 0) ? Math.round(img.getBoundingClientRect().left) : 0,
+      paddingTop = (img.getBoundingClientRect().top < 0) ? Math.round(img.getBoundingClientRect().top) : 0;
+
   info.textContent = this.value + ' %';
 
-  if (img.width <= iWidth) {
-    img.style.marginLeft = (iWidth - parseInt(img.style.width, 10)) / 2 + 'px';
-  }
+  // TODO - if (img.dataset.width < iWidth && scale > 1) { // will overflow the image }
+  var scale = range.value / 100;
+  var x = (imgCurrentWidth > iWidth) ? Math.round(range.value * 4.6 - iWidth / 2) : 0;
+  var y = (imgCurrentHeight > iHeight) ? Math.round(range.value * 2.9 - iHeight / 3) : 0;
+  var transform = 'translate(' + x + 'px, ' + y + 'px) scale(' + scale + ')';
+
+  // TODO - moz, o, ms prefixes
+  img.style.webkitTransform = transform;
   
-  if (img.height <= iHeight) {
-    img.style.marginTop = (iHeight - range.value / 100 * parseInt(img.dataset.height, 10)) / 2 + 'px';
-  }
+  body.style.overflowX = (imgCurrentWidth > iWidth) ? 'scroll' : 'hidden';
+  body.style.overflowY = (imgCurrentHeight + 50 > iHeight) ? 'scroll' : 'hidden';
 };
 
 dropzone.ondragover = function () {
@@ -388,7 +415,8 @@ next_button.onclick = function () {
   showNextImage();
 };
 
-dropzone.style.width = window.innerWidth + 'px';
-dropzone.style.height = document.body.scrollHeight + 'px';
+// FIXME - dropzone disabled
+//dropzone.style.width = window.innerWidth + 'px';
+//dropzone.style.height = document.body.scrollHeight + 'px';
 
 }());
