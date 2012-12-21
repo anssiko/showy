@@ -53,6 +53,7 @@ function showThumbnails() {
     var focused_index = q('#preview > img').dataset.index;
     minimizeImage(q('#preview > img'));
     setFocus(qa('#thumbnails > img')[focused_index]);
+    info.hidden = true;
   } else {
     setTimeout(function() {
       setFocus(qa('#thumbnails > img')[0]);
