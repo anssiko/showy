@@ -14,7 +14,18 @@ var body = q('body'),
     prev_button = q('#prev'),
     next_button = q('#next'),
     back_button = q('#back');
-    
+
+// Only WebKit is currently prefixing CSS features we're interested in.
+// getCSS() returns a prefixed version for WebKit and unprefixed for others.
+function getCSS(unprefixed) {
+  if (unprefixed in document.documentElement.style) {
+    return unprefixed;
+  } else {
+    var webkitPrefixed = 'webkit' + unprefixed.slice(0,1).toUpperCase() + unprefixed.slice(1);
+    return (webkitPrefixed in document.documentElement.style) ? webkitPrefixed : unprefixed;
+  }
+}
+
 function addImages(files) {
   var i, img;
   
@@ -109,8 +120,8 @@ function minimizeImage(img) {
   
   var next_img = q('img[data-index="' + (parseInt(img.dataset.index, 10) + 1) + '"]');
   
-  // TODO prefixes
-  img.style.webkitTransform = 'scale(1)';
+  var prop = getCSS('transform');
+  img.style[prop] = 'scale(1)';
   img.style.width = '25%';
   img.style.marginLeft = '';
   img.style.marginTop = '';
@@ -352,11 +363,11 @@ function enterFullscreen(el) {
 }
 
 range.onchange = function () {
-  var img = q('#preview > img'),
+  var img = q('#preview > img');
       iWidth = window.innerWidth,
       iHeight = window.innerHeight,
       imgRatio = (img.dataset.width / img.dataset.height);
-
+      
   var imgCurrentWidth = (img.dataset.width > iWidth) ?
       Math.round(iWidth * (range.value / 100)) :
       Math.round(img.dataset.width * (range.value / 100));
@@ -365,22 +376,16 @@ range.onchange = function () {
       Math.round(iWidth/imgRatio * (range.value / 100)) :
       Math.round(img.dataset.height * (range.value / 100));
 
-  var paddingLeft = (img.getBoundingClientRect().left < 0) ? Math.round(img.getBoundingClientRect().left) : 0,
-      paddingTop = (img.getBoundingClientRect().top < 0) ? Math.round(img.getBoundingClientRect().top) : 0;
-
   info.textContent = this.value + ' %';
-
-  // TODO - if (img.dataset.width < iWidth && scale > 1) { // will overflow the image }
-  var scale = range.value / 100;
-  var x = (imgCurrentWidth > iWidth) ? Math.round(range.value * 4.6 - iWidth / 2) : 0;
-  var y = (imgCurrentHeight > iHeight) ? Math.round(range.value * 2.9 - iHeight / 3) : 0;
-  var transform = 'translate(' + x + 'px, ' + y + 'px) scale(' + scale + ')';
-
-  // TODO - moz, o, ms prefixes
-  img.style.webkitTransform = transform;
+  img.dataset.scale = range.value / 100;
+  
+  var prop = getCSS('transform');
+  var transform = 'scale(' + img.dataset.scale + ')';
+  img.style[prop] = transform;
   
   body.style.overflowX = (imgCurrentWidth > iWidth) ? 'scroll' : 'hidden';
   body.style.overflowY = (imgCurrentHeight + 50 > iHeight) ? 'scroll' : 'hidden';
+  window.scrollTo(0, 0);
 };
 
 dropzone.ondragover = function () {

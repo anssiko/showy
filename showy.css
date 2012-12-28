@@ -61,12 +61,17 @@ input[type=file] {
 
 input[type=range] {
   position: absolute;
-  right: 0;
+  right: 15%;
   top: 40px;
   z-index: 2;
   color: white;
   background-color: transparent;
-  width: 100%;
+  width: 70%;
+  opacity: 0.5;
+}
+
+input[type=range]:hover {
+  opacity: 1;
 }
 
 #thumbnails {
@@ -91,6 +96,30 @@ input[type=range] {
   left: 0px;
 }
 
+#prev, #next {
+  position: absolute;
+  opacity: 0;
+  z-index: 20;
+  width: 10%;
+  height: 100%;
+}
+
+#prev:hover, #next:hover {
+  opacity: 0.5;
+}
+
+#prev[disabled], #next[disabled] {
+  opacity: 0;
+}
+
+#prev {
+  left: 0%;
+}
+
+#next {
+  right: 0%;
+}
+
 #thumbnails > img {
   -webkit-transition: all 0.2s ease;
   transition: all 0.2s ease;
@@ -99,6 +128,8 @@ input[type=range] {
 #preview > img {
   -webkit-transition: all 0.2s ease;
   transition: all 0.2s ease;
+  -webkit-transform-origin: 0 0;
+  transform-origin: 0 0;
 }
 
 abbr {
