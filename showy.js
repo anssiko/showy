@@ -86,9 +86,9 @@ function showPreview(img) {
 
   enlargeImage(img);
   preview.hidden = false;
-
   setResolution(img);
-  
+  setImageSizeToFitScreen(img);
+
   initRange(img);
   initPrevNext();
   initBack();
@@ -107,12 +107,6 @@ function enlargeImage(img) {
   img.style.opacity = 0.75;
 
   preview.appendChild(img);
-  
-  setTimeout(function() {
-    img.style.width = '100%';
-    img.style.opacity = 1;
-  }, 0);
-  
 }
 
 function minimizeImage(img) {
@@ -123,6 +117,7 @@ function minimizeImage(img) {
   var prop = getCSS('transform');
   img.style[prop] = 'scale(1)';
   img.style.width = '25%';
+  img.style.height = '';
   img.style.marginLeft = '';
   img.style.marginTop = '';
   
@@ -173,6 +168,23 @@ function initRange(img) {
   range.max = 200;
 
   info.textContent = '';
+}
+
+function setImageSizeToFitScreen(img) {
+  var iWidth = window.innerWidth,
+      iHeight = window.innerHeight - 40;
+  
+  setTimeout(function() {
+    img.style.width = '100%';
+    img.style.opacity = 1;
+  }, 0);
+
+  if (((img.dataset.height / img.dataset.width) * iWidth) > iHeight) {
+    setTimeout(function() {
+      img.style.width = '';
+      img.style.height = iHeight + 'px';
+    }, 0);
+  }
 }
 
 function setResolution(img) {
@@ -252,6 +264,7 @@ function showPrevImage() {
     next_button.disabled = false;
     prev_button.disabled = (prev_index === 0) ? true : false;
     setResolution(prev);
+    setImageSizeToFitScreen(prev);
     metadata.textContent = getMetadata(prev);
   }
 
@@ -274,6 +287,7 @@ function showNextImage() {
     prev_button.disabled = false;
     next_button.disabled = (next_index === getMaxIndex()) ? true : false;
     setResolution(next);
+    setImageSizeToFitScreen(next);
     metadata.textContent = getMetadata(next);
   }
   
