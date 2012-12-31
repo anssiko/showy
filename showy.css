@@ -94,6 +94,7 @@ input[type=range]:hover {
   position: absolute;
   top: 30px;
   left: 0px;
+  width: 100%;
 }
 
 #prev, #next {
@@ -128,10 +129,11 @@ input[type=range]:hover {
 }
 
 #preview > img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
   -webkit-transition: all 0.2s ease;
   transition: all 0.2s ease;
-  -webkit-transform-origin: 0 0;
-  transform-origin: 0 0;
 }
 
 abbr {
