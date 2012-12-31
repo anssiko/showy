@@ -171,18 +171,18 @@ function initRange(img) {
 }
 
 function setImageSizeToFitScreen(img) {
-  var iWidth = window.innerWidth,
-      iHeight = window.innerHeight - 40;
+  var screen_width = window.innerWidth,
+      screen_height = window.innerHeight - 40;
   
   setTimeout(function() {
     img.style.width = '100%';
     img.style.opacity = 1;
   }, 0);
 
-  if (((img.dataset.height / img.dataset.width) * iWidth) > iHeight) {
+  if (((img.dataset.height / img.dataset.width) * screen_width) > screen_height) {
     setTimeout(function() {
       img.style.width = '';
-      img.style.height = iHeight + 'px';
+      img.style.height = screen_height + 'px';
     }, 0);
   }
 }
@@ -377,29 +377,51 @@ function enterFullscreen(el) {
 }
 
 range.onchange = function () {
-  var img = q('#preview > img');
-      iWidth = window.innerWidth,
-      iHeight = window.innerHeight,
-      imgRatio = (img.dataset.width / img.dataset.height);
+  var img = q('#preview > img'),
+      screen_width = window.innerWidth,
+      screen_height = window.innerHeight,
+      img_ratio = (img.dataset.width / img.dataset.height),
+      screen_ratio = screen_width / screen_height,
+      zoom_ratio = range.value / 100,
+      img_width = img.dataset.width,
+      img_height = img.dataset.height;
       
-  var imgCurrentWidth = (img.dataset.width > iWidth) ?
-      Math.round(iWidth * (range.value / 100)) :
-      Math.round(img.dataset.width * (range.value / 100));
+  var fit_to_width = (img_width < screen_width);
+  var fit_to_height = (img_height < screen_height);
+  
+  // TODO - test all corner cases, factor out reusable parts
+  if (fit_to_width && fit_to_height) {
+    if (screen_ratio < img_ratio) {
+      var img_current_width = screen_width * zoom_ratio;
+      var img_current_height = img_current_width / img_ratio;
+    } else {
+      var img_current_height = screen_height * zoom_ratio;
+      var img_current_width = img_current_height * img_ratio;
+    }
+  } else if (!fit_to_width && !fit_to_height) {
+    var img_current_width = (screen_ratio > img_ratio) ? (screen_width * img_ratio * zoom_ratio) : (screen_width * zoom_ratio);
+    var img_current_height = (screen_ratio > img_ratio) ? (screen_width * zoom_ratio) : (img_current_width / img_ratio);
+  } else if (fit_to_width && !fit_to_height) {
+    var img_current_height = (screen_ratio > img_ratio) ? (screen_width * zoom_ratio) : (img_current_width / img_ratio);
+    var img_current_width = img_current_height * img_ratio;
+  } else if (!fit_to_width && fit_to_height) {
+    var img_current_width = screen_width * zoom_ratio;
+    var img_current_height = img_height * zoom_ratio;
+  }
 
-  var imgCurrentHeight = (img.dataset.height > iHeight) ?
-      Math.round(iWidth/imgRatio * (range.value / 100)) :
-      Math.round(img.dataset.height * (range.value / 100));
+  var transform = getCSS('transform');
+  var transformOriginX = getCSS('transformOriginX');
+  var transformOriginY = getCSS('transformOriginY');
 
-  info.textContent = this.value + ' %';
+  info.textContent = this.value + ' % (' + Math.round(img_current_width, 10) + 'x' + Math.round(img_current_height, 10) + ')';
   img.dataset.scale = range.value / 100;
-  
-  var prop = getCSS('transform');
-  var transform = 'scale(' + img.dataset.scale + ')';
-  img.style[prop] = transform;
-  
-  body.style.overflowX = (imgCurrentWidth > iWidth) ? 'scroll' : 'hidden';
-  body.style.overflowY = (imgCurrentHeight + 50 > iHeight) ? 'scroll' : 'hidden';
-  window.scrollTo(0, 0);
+
+  img.style[transformOriginX] = (img_current_width > screen_width) ? '0' : '50%';
+  img.style[transformOriginY] = (img_current_height > screen_height) ? '0' : '50%';
+  img.style[transform] = 'scale(' + zoom_ratio + ')';
+
+  body.style.overflowX = (img_current_width > screen_width) ? 'scroll' : 'hidden';
+  body.style.overflowY = (img_current_height > screen_height - 50) ? 'scroll' : 'hidden';
 };
 
 dropzone.ondragover = function () {
