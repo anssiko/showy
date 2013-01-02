@@ -149,7 +149,6 @@ function initBack() {
 }
 
 function initRange(img) {
-  
   function supported() {
     var elem = document.createElement('input');
     elem.type = 'range';
@@ -162,11 +161,6 @@ function initRange(img) {
   }
 
   img.style.width = '100%';
-
-  range.min = 10;
-  range.value = 100;
-  range.max = 200;
-
   info.textContent = '';
 }
 
@@ -376,52 +370,58 @@ function enterFullscreen(el) {
   }
 }
 
-range.onchange = function () {
-  var img = q('#preview > img'),
-      screen_width = window.innerWidth,
-      screen_height = window.innerHeight,
-      img_ratio = (img.dataset.width / img.dataset.height),
+function getCurrentImageSize(img, zoom_ratio, screen_width, screen_height) {
+  var img_ratio = (img.dataset.width / img.dataset.height),
       screen_ratio = screen_width / screen_height,
-      zoom_ratio = range.value / 100,
       img_width = img.dataset.width,
-      img_height = img.dataset.height;
+      img_height = img.dataset.height,
+      img_current_width, img_current_height;
       
   var fit_to_width = (img_width < screen_width);
   var fit_to_height = (img_height < screen_height);
   
-  // TODO - test all corner cases, factor out reusable parts
+  // TODO - test all corner cases
   if (fit_to_width && fit_to_height) {
     if (screen_ratio < img_ratio) {
-      var img_current_width = screen_width * zoom_ratio;
-      var img_current_height = img_current_width / img_ratio;
+      img_current_width = screen_width * zoom_ratio;
+      img_current_height = img_current_width / img_ratio;
     } else {
-      var img_current_height = screen_height * zoom_ratio;
-      var img_current_width = img_current_height * img_ratio;
+      img_current_height = screen_height * zoom_ratio;
+      img_current_width = img_current_height * img_ratio;
     }
   } else if (!fit_to_width && !fit_to_height) {
-    var img_current_width = (screen_ratio > img_ratio) ? (screen_width * img_ratio * zoom_ratio) : (screen_width * zoom_ratio);
-    var img_current_height = (screen_ratio > img_ratio) ? (screen_width * zoom_ratio) : (img_current_width / img_ratio);
+    img_current_width = (screen_ratio > img_ratio) ? (screen_width * img_ratio * zoom_ratio) : (screen_width * zoom_ratio);
+    img_current_height = (screen_ratio > img_ratio) ? (screen_width * zoom_ratio) : (img_current_width / img_ratio);
   } else if (fit_to_width && !fit_to_height) {
-    var img_current_height = (screen_ratio > img_ratio) ? (screen_width * zoom_ratio) : (img_current_width / img_ratio);
-    var img_current_width = img_current_height * img_ratio;
+    img_current_height = (screen_ratio > img_ratio) ? (screen_width * zoom_ratio) : (img_current_width / img_ratio);
+    img_current_width = img_current_height * img_ratio;
   } else if (!fit_to_width && fit_to_height) {
-    var img_current_width = screen_width * zoom_ratio;
-    var img_current_height = img_height * zoom_ratio;
+    img_current_width = screen_width * zoom_ratio;
+    img_current_height = img_height * zoom_ratio;
   }
+  return { width: img_current_width, height: img_current_height };
+}
+
+range.onchange = function () {
+  var img = q('#preview > img'),
+      screen_width = window.innerWidth,
+      screen_height = window.innerHeight,
+      zoom_ratio = range.value / 100;
+      
+  var img_current = getCurrentImageSize(img, range.value / 100, screen_width, screen_height);
+  info.textContent = this.value + ' % (' + Math.round(img_current.width, 10) + 'x' + Math.round(img_current.height, 10) + ')';
+  img.dataset.scale = range.value / 100;
 
   var transform = getCSS('transform');
   var transformOriginX = getCSS('transformOriginX');
   var transformOriginY = getCSS('transformOriginY');
 
-  info.textContent = this.value + ' % (' + Math.round(img_current_width, 10) + 'x' + Math.round(img_current_height, 10) + ')';
-  img.dataset.scale = range.value / 100;
-
-  img.style[transformOriginX] = (img_current_width > screen_width) ? '0' : '50%';
-  img.style[transformOriginY] = (img_current_height > screen_height) ? '0' : '50%';
+  img.style[transformOriginX] = (img_current.width > screen_width) ? '0' : '50%';
+  img.style[transformOriginY] = (img_current.height > screen_height) ? '0' : '50%';
   img.style[transform] = 'scale(' + zoom_ratio + ')';
 
-  body.style.overflowX = (img_current_width > screen_width) ? 'scroll' : 'hidden';
-  body.style.overflowY = (img_current_height > screen_height - 50) ? 'scroll' : 'hidden';
+  body.style.overflowX = (img_current.width > screen_width) ? 'scroll' : 'hidden';
+  body.style.overflowY = (img_current.height > screen_height - 50) ? 'scroll' : 'hidden';
 };
 
 dropzone.ondragover = function () {
