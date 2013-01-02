@@ -29,6 +29,9 @@ function getCSS(unprefixed) {
 function addImages(files) {
   var i, img;
   
+  info.hidden = false;
+  info.textContent = 'Loading images...';
+  
   setTimeout(function() {
     for (i = 0; i < files.length; i++) {
       img = getImage(files[i]);
@@ -50,6 +53,8 @@ function addImages(files) {
 }
 
 function showThumbnails() {
+  var preview_img = q('#preview > img');
+  
   input.hidden = false;
   preview.hidden = true;
   metadata.hidden = true;
@@ -62,9 +67,9 @@ function showThumbnails() {
   resetBodyDimensions();
   addThumbnailsKeyBindings();
 
-  if (q('#preview > img')) {
-    var focused_index = q('#preview > img').dataset.index;
-    minimizeImage(q('#preview > img'));
+  if (preview_img) {
+    var focused_index = preview_img.dataset.index;
+    minimizeImage(preview_img);
     setFocus(qa('#thumbnails > img')[focused_index]);
     info.hidden = true;
   } else {
@@ -402,15 +407,12 @@ function getCurrentImageSize(img, zoom_ratio, screen_width, screen_height) {
   return { width: img_current_width, height: img_current_height };
 }
 
-range.onchange = function () {
-  var img = q('#preview > img'),
-      screen_width = window.innerWidth,
-      screen_height = window.innerHeight,
-      zoom_ratio = range.value / 100;
+function scaleImage(img, scale_ratio) {
+  var screen_width = window.innerWidth,
+      screen_height = window.innerHeight;
       
-  var img_current = getCurrentImageSize(img, range.value / 100, screen_width, screen_height);
-  info.textContent = this.value + ' % (' + Math.round(img_current.width, 10) + 'x' + Math.round(img_current.height, 10) + ')';
-  img.dataset.scale = range.value / 100;
+  var img_current = getCurrentImageSize(img, scale_ratio, screen_width, screen_height);
+  info.textContent = Math.round(scale_ratio * 100) + ' % (' + Math.round(img_current.width, 10) + 'x' + Math.round(img_current.height, 10) + ')';
 
   var transform = getCSS('transform');
   var transformOriginX = getCSS('transformOriginX');
@@ -418,46 +420,52 @@ range.onchange = function () {
 
   img.style[transformOriginX] = (img_current.width > screen_width) ? '0' : '50%';
   img.style[transformOriginY] = (img_current.height > screen_height) ? '0' : '50%';
-  img.style[transform] = 'scale(' + zoom_ratio + ')';
+  img.style[transform] = 'scale(' + scale_ratio + ')';
 
   body.style.overflowX = (img_current.width > screen_width) ? 'scroll' : 'hidden';
   body.style.overflowY = (img_current.height > screen_height - 50) ? 'scroll' : 'hidden';
-};
+}
 
-dropzone.ondragover = function () {
-  return false;
-};
+window.onload = function () {
+  range.onchange = function () {
+    scaleImage(q('#preview > img'), range.value / 100);
+  };
 
-dropzone.ondragend = function () {
-  return false;
-};
+  input.onchange = function () {
+    addImages(input.files);
+  };
+
+  input.onclick = function () {
+    enterFullscreen(document.documentElement);
+  };
+
+  prev_button.onclick = function () {
+    showPrevImage();
+  };
+
+  next_button.onclick = function () {
+    showNextImage();
+  };
   
-dropzone.ondrop = function (e) {
-  e.preventDefault();
-  addImages(e.dataTransfer.files);
-  return false;
-};
+  // FIXME - dropzone disabled
+  /*
+  dropzone.ondragover = function () {
+    return false;
+  };
 
-input.onchange = function () {
-  info.hidden = false;
-  info.textContent = 'Loading images ...';
-  addImages(input.files);
-};
+  dropzone.ondragend = function () {
+    return false;
+  };
+  
+  dropzone.ondrop = function (e) {
+    e.preventDefault();
+    addImages(e.dataTransfer.files);
+    return false;
+  };
 
-input.onclick = function () {
-  enterFullscreen(document.documentElement);
+  dropzone.style.width = window.innerWidth + 'px';
+  dropzone.style.height = document.body.scrollHeight + 'px';
+  */
 };
-
-prev_button.onclick = function () {
-  showPrevImage();
-};
-
-next_button.onclick = function () {
-  showNextImage();
-};
-
-// FIXME - dropzone disabled
-//dropzone.style.width = window.innerWidth + 'px';
-//dropzone.style.height = document.body.scrollHeight + 'px';
 
 }());
