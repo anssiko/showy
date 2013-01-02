@@ -15,23 +15,6 @@ var body = q('body'),
     next_button = q('#next'),
     back_button = q('#back');
 
-// Only WebKit is currently prefixing CSS features we're interested in.
-// getCSSPropertyName() returns a prefixed version for WebKit and unprefixed for others.
-function getCSSPropertyName(unprefixed) {
-  if (unprefixed in document.documentElement.style) {
-    return unprefixed;
-  } else {
-    var webkit_prefixed = 'webkit' + unprefixed.slice(0,1).toUpperCase() + unprefixed.slice(1);
-    return (webkit_prefixed in document.documentElement.style) ? webkit_prefixed : unprefixed;
-  }
-}
-
-function isInputTypeRangeSupported() {
-  var elem = document.createElement('input');
-  elem.type = 'range';
-  return (elem.type !== 'text');
-}
-
 function addImages(files) {
   var i, img;
   
@@ -84,7 +67,7 @@ function showThumbnails() {
     }, 1000);
   }
   
-  if (!isInputTypeRangeSupported()) q('.fd-slider-wrapper').style.display = 'none';
+  if (!Modernizr.inputtypes.range) q('.fd-slider-wrapper').style.display = 'none';
 }
 
 function showPreview(img) {
@@ -124,7 +107,7 @@ function enlargeImage(img) {
 
 function minimizeImage(img) {
   var next_img = q('img[data-index="' + (parseInt(img.dataset.index, 10) + 1) + '"]');
-  var prop = getCSSPropertyName('transform');
+  var prop = Modernizr.prefixed('transform');
 
   img.style[prop] = 'scale(1)';
   img.style.width = '25%';
@@ -163,7 +146,7 @@ function initRange(img) {
   img.style.width = '100%';
   info.textContent = '';
 
-  if (!isInputTypeRangeSupported()) {
+  if (!Modernizr.inputtypes.range) {
     var polyfill = q('.fd-slider-wrapper');
     
     console.info('<input type="range"> not supported, using polyfill.');
@@ -417,9 +400,9 @@ function scaleImage(img, scale_ratio) {
   var img_current = getCurrentImageSize(img, scale_ratio, screen_width, screen_height);
   info.textContent = Math.round(scale_ratio * 100) + ' % (' + Math.round(img_current.width, 10) + 'x' + Math.round(img_current.height, 10) + ')';
 
-  var transform = getCSSPropertyName('transform');
-  var transformOriginX = getCSSPropertyName('transformOriginX');
-  var transformOriginY = getCSSPropertyName('transformOriginY');
+  var transform = Modernizr.prefixed('transform');
+  var transformOriginX = Modernizr.prefixed('transformOriginX');
+  var transformOriginY = Modernizr.prefixed('transformOriginY');
 
   img.style[transformOriginX] = (img_current.width > screen_width) ? '0' : '50%';
   img.style[transformOriginY] = (img_current.height > screen_height) ? '0' : '50%';
