@@ -144,6 +144,10 @@ abbr {
   opasity: 0;
 }
 
+*[hidden] {
+  display: none;
+}
+
 .fd-slider-wrapper {
   display: none;
 }
