@@ -74,7 +74,7 @@ function showThumbnails() {
   addThumbnailsKeyBindings();
 
   if (preview_img) {
-    var focused_index = preview_img.dataset.index;
+    var focused_index = getFocused().dataset.index;
     minimizeImage(preview_img);
     setFocus(qa('#thumbnails > img')[focused_index]);
     info.hidden = true;
@@ -123,8 +123,6 @@ function enlargeImage(img) {
 }
 
 function minimizeImage(img) {
-  if (!img) return false;
-  
   var next_img = q('img[data-index="' + (parseInt(img.dataset.index, 10) + 1) + '"]');
   var prop = getCSSPropertyName('transform');
 
