@@ -26,6 +26,13 @@ function getCSS(unprefixed) {
   }
 }
 
+function isInputTypeRangeSupported() {
+  var elem = document.createElement('input');
+  elem.type = 'range';
+  return (elem.type !== 'text');
+}
+
+
 function addImages(files) {
   var i, img;
   
@@ -77,6 +84,8 @@ function showThumbnails() {
       setFocus(qa('#thumbnails > img')[0]);
     }, 1000);
   }
+  
+  if (!isInputTypeRangeSupported()) q('.fd-slider-wrapper').style.display = 'none';
 }
 
 function showPreview(img) {
@@ -154,19 +163,16 @@ function initBack() {
 }
 
 function initRange(img) {
-  function supported() {
-    var elem = document.createElement('input');
-    elem.type = 'range';
-    return (elem.type !== 'text');
-  }
-  
-  if (!supported()) {
-    range.hidden = true;
-    console.info('<input type="range"> not supported, zoom disabled.');
-  }
-
   img.style.width = '100%';
   info.textContent = '';
+
+  if (!isInputTypeRangeSupported()) {
+    var polyfill = q('.fd-slider-wrapper');
+    
+    console.info('<input type="range"> not supported, using polyfill.');
+    polyfill.style.marginTop = '30px';
+    polyfill.style.display = 'block';
+  }
 }
 
 function setImageSizeToFitScreen(img) {

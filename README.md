@@ -13,7 +13,6 @@ Showy, your flamboyant image viewer on the Web.
 ## Backlog
 
 * test with other browsers than Chrome
-* polyfill &lt;input type=range&gt;
 * Blob URL workaround for unsupported browsers
 * key bindings for zoom
 * scroll thumbnails view to focused element
@@ -21,5 +20,6 @@ Showy, your flamboyant image viewer on the Web.
 * make thumbnails square shaped (if image ratios differ)
 * load images in batches to display them progressively
 * extract and show EXIF metadata
+* [DONE] polyfill &lt;input type=range&gt;
 * [DONE] adjust zooming behavior
 * [DONE] move elements with translate() instead of pos:abs top/left ([source](http://paulirish.com/2012/why-moving-elements-with-translate-is-better-than-posabs-topleft/))

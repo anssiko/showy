@@ -3,15 +3,36 @@
 <head>
   <title>Showy</title>
   <link href="showy.css" rel="stylesheet">
+  <script src="lib/modernizr.custom.js"></script>
+  <script>
+  // Set up the yepnope (Modernizr.load) directives.
+  Modernizr.load([
+  {
+    // Test if <input type="range"> is supported using Modernizr.
+    // If not supported, load the fd-slider polyfill.
+    test: Modernizr.inputtypes.range,
+    nope: [
+      'http://www.frequency-decoder.com/demo/fd-slider/css/fd-slider.mhtml.min.css',
+      'http://www.frequency-decoder.com/demo/fd-slider/js/fd-slider.js'
+    ],
+    callback: function(id, test_result) {
+      // If the slider file has loaded then fire the onDomReady event.
+      if("fdSlider" in window && typeof (fdSlider.onDomReady) != "undefined") {
+          try { fdSlider.onDomReady(); } catch(err) {};
+      };
+    }
+  }
+  ]);
+  </script>
 </head>
 <body>
 <div id="picker">
   <span id="title"><abbr title="Showy, your flamboyant image viewer on the Web.">Showy</abbr></span>
   <input type="file" accept="image/*" multiple>
   <button id="back" hidden>&uarr; Back</button>
-  <input type="range" min="10" value="100" max="200" step="1" hidden>
   <span id="metadata"></span>
   <span id="info" hidden></span>
+  <input type="range" min="10" value="100" max="200" step="1" hidden>
 </div>
 <div id="dropzone"></div>
 <div id="thumbnails"></div>
