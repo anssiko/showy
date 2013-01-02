@@ -5,21 +5,22 @@
   <link href="showy.css" rel="stylesheet">
   <script src="lib/modernizr.custom.js"></script>
   <script src="lib/modernizr.load.js"></script>
+  <script src="lib/html5-hidden-attr.js"></script>
 </head>
 <body>
 <div id="picker">
   <span id="title"><abbr title="Showy, your flamboyant image viewer on the Web.">Showy</abbr></span>
   <input type="file" accept="image/*" multiple>
-  <button id="back" hidden>&uarr; Back</button>
+  <button id="back">&uarr; Back</button>
   <span id="metadata"></span>
-  <span id="info" hidden></span>
-  <input type="range" min="10" value="100" max="200" step="1" hidden>
+  <span id="info"></span>
+  <input type="range" min="10" value="100" max="200" step="1">
 </div>
 <div id="dropzone"></div>
 <div id="thumbnails"></div>
-<div id="preview" hidden>
-  <button id="prev" hidden>&larr;</button>
-  <button id="next" hidden>&rarr;</button>
+<div id="preview">
+  <button id="prev">&larr;</button>
+  <button id="next">&rarr;</button>
 </div>
 <script src="showy.js"></script>
 </body>

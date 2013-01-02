@@ -153,6 +153,15 @@ function getFocused() {
   return q('img[data-focused="true"]');
 }
 
+function initHiddenStates() {
+  back_button.hidden = true;
+  info.hidden = true;
+  range.hidden = true;
+  preview.hidden = true;
+  prev_button.hidden = true;
+  next_button.hidden = true;
+}
+
 function initBack() {
   back_button.onclick = function () {
     showThumbnails();
@@ -430,6 +439,8 @@ function scaleImage(img, scale_ratio) {
 }
 
 window.onload = function () {
+  initHiddenStates();
+  
   range.onchange = function () {
     scaleImage(q('#preview > img'), range.value / 100);
   };
