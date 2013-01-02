@@ -16,13 +16,13 @@ var body = q('body'),
     back_button = q('#back');
 
 // Only WebKit is currently prefixing CSS features we're interested in.
-// getCSS() returns a prefixed version for WebKit and unprefixed for others.
-function getCSS(unprefixed) {
+// getCSSPropertyName() returns a prefixed version for WebKit and unprefixed for others.
+function getCSSPropertyName(unprefixed) {
   if (unprefixed in document.documentElement.style) {
     return unprefixed;
   } else {
-    var webkitPrefixed = 'webkit' + unprefixed.slice(0,1).toUpperCase() + unprefixed.slice(1);
-    return (webkitPrefixed in document.documentElement.style) ? webkitPrefixed : unprefixed;
+    var webkit_prefixed = 'webkit' + unprefixed.slice(0,1).toUpperCase() + unprefixed.slice(1);
+    return (webkit_prefixed in document.documentElement.style) ? webkit_prefixed : unprefixed;
   }
 }
 
@@ -31,7 +31,6 @@ function isInputTypeRangeSupported() {
   elem.type = 'range';
   return (elem.type !== 'text');
 }
-
 
 function addImages(files) {
   var i, img;
@@ -127,8 +126,8 @@ function minimizeImage(img) {
   if (!img) return false;
   
   var next_img = q('img[data-index="' + (parseInt(img.dataset.index, 10) + 1) + '"]');
-  
-  var prop = getCSS('transform');
+  var prop = getCSSPropertyName('transform');
+
   img.style[prop] = 'scale(1)';
   img.style.width = '25%';
   img.style.height = '';
@@ -228,10 +227,10 @@ function setMetadata(img, file, num) {
   return img;
 }
 
-function getMetadata(image) {
-  return (parseInt(image.dataset.index, 10) + 1) + '/' + (getMaxIndex() + 1) + ' ' + image.dataset.name +
-         ' (' + image.dataset.width + 'x' + image.dataset.height +
-         ', ' + (Math.round(image.dataset.size/100000))/10 + ' MB)';
+function getMetadata(img) {
+  return (parseInt(img.dataset.index, 10) + 1) + '/' + (getMaxIndex() + 1) + ' ' + img.dataset.name +
+         ' (' + img.dataset.width + 'x' + img.dataset.height +
+         ', ' + (Math.round(img.dataset.size / 100000)) / 10 + ' MB)';
 }
 
 function getImage(file) {
@@ -420,9 +419,9 @@ function scaleImage(img, scale_ratio) {
   var img_current = getCurrentImageSize(img, scale_ratio, screen_width, screen_height);
   info.textContent = Math.round(scale_ratio * 100) + ' % (' + Math.round(img_current.width, 10) + 'x' + Math.round(img_current.height, 10) + ')';
 
-  var transform = getCSS('transform');
-  var transformOriginX = getCSS('transformOriginX');
-  var transformOriginY = getCSS('transformOriginY');
+  var transform = getCSSPropertyName('transform');
+  var transformOriginX = getCSSPropertyName('transformOriginX');
+  var transformOriginY = getCSSPropertyName('transformOriginY');
 
   img.style[transformOriginX] = (img_current.width > screen_width) ? '0' : '50%';
   img.style[transformOriginY] = (img_current.height > screen_height) ? '0' : '50%';
