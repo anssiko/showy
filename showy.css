@@ -114,6 +114,7 @@ input[type=range]:hover {
   position: absolute;
   margin: 0;
   top: 30px;
+  width: 100%;
 }
 
 #thumbnails > img {
