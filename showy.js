@@ -13,7 +13,8 @@ var body = q('body'),
     dropzone = q('#dropzone'),
     prev_button = q('#prev'),
     next_button = q('#next'),
-    back_button = q('#back');
+    back_button = q('#back'),
+    fullscreen_button = q('#fullscreen');
 
 function addImages(files) {
   var i, img;
@@ -352,14 +353,12 @@ function addThumbnailsKeyBindings() {
   };
 }
 
-function enterFullscreen(el) {
-  if (el.requestFullscreen) {
-    el.requestFullscreen();
-  } else if (el.webkitRequestFullScreen) {
-    el.webkitRequestFullScreen();
-  } else if (el.mozRequestFullScreen) {
-    el.mozRequestFullScreen();
+function toggleFullscreen(el) {
+  if (Modernizr.prefixed('fullScreenElement', document) || Modernizr.prefixed('fullscreenElement', document)) {
+    Modernizr.prefixed('cancelFullScreen', document)();
+    return;
   }
+  Modernizr.prefixed('requestFullScreen', el)();
 }
 
 function getCurrentImageSize(img, zoom_ratio, screen_width, screen_height) {
@@ -422,8 +421,8 @@ window.onload = function () {
     addImages(input.files);
   };
 
-  input.onclick = function () {
-    enterFullscreen(document.documentElement);
+  fullscreen_button.onclick = function () {
+    toggleFullscreen(document.documentElement);
   };
 
   prev_button.onclick = function () {

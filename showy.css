@@ -37,12 +37,6 @@ input[type=file] {
   border-color: #000;
 }
 
-#back {
-  float: left;
-  height: 20px;
-  margin-right: 15px;
-}
-
 button {
   border-radius: 12px;
   border: solid 1px gray;
@@ -50,6 +44,17 @@ button {
   background: linear-gradient(top, #ededed, #cbcbcb);
   box-shadow: 0 1px 1px rgba(0, 0, 0, .2);
   text-shadow: 0 1px 0 rgba(255, 255, 255, .8);
+}
+
+#back {
+  float: left;
+  height: 20px;
+  margin-right: 15px;
+}
+
+#fullscreen {
+  float: right;
+  margin-right: 15px;
 }
 
 #info {
@@ -110,6 +115,7 @@ input[type=range]:hover {
   position: fixed;
   font-size: 200%;
   border: 0;
+  border-radius: 0;
   opacity: 0;
   z-index: 20;
   width: 10%;
