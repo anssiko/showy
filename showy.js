@@ -296,19 +296,15 @@ function addPreviewKeyBindings() {
   document.onkeydown = function (e) {
     switch (e.keyCode) {
       case 13: // return/back
-        e.preventDefault();
         showThumbnails();
         break;
       case 37: // <-
-        e.preventDefault();
         showPrevImage();
         break;
       case 38: // up/back
-        e.preventDefault();
         showThumbnails();
         break;
       case 39: // ->
-        e.preventDefault();
         showNextImage();
         break;
     }
@@ -320,18 +316,15 @@ function addThumbnailsKeyBindings() {
     switch (e.keyCode) {
       case 13: // return
         var focused = getFocused();
-        e.preventDefault();
         showPreview(focused);
         break;
       case 37: // <-
-        e.preventDefault();
         var focused = getFocused();
         if (focused && focused.previousSibling === null) return;
         setFocus(focused.previousSibling);
         unsetFocus(focused);
         break;
       case 38: // up
-        e.preventDefault();
         var focused = getFocused();
         var above_index = parseInt(focused.dataset.index, 10) - 4;
         if (above_index < 0) return;
@@ -340,14 +333,12 @@ function addThumbnailsKeyBindings() {
         unsetFocus(focused);
         break;
       case 39: // ->
-        e.preventDefault();
         var focused = getFocused();
         if (focused && focused.nextSibling === null) return;
         setFocus(focused.nextSibling);
         unsetFocus(focused);
         break;
       case 40: // down
-        e.preventDefault();
         var focused = getFocused();
         var below_index = parseInt(focused.dataset.index, 10) + 4;
         if (below_index >= getMaxIndex()) return;
