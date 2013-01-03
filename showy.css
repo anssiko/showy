@@ -191,4 +191,6 @@ abbr {
 
 .fd-slider {
   height: 10px !important;
+  left: 15% !important;
+  width: 70% !important;
 }
