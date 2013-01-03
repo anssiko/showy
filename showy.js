@@ -140,6 +140,7 @@ function initBack() {
   back_button.onclick = function () {
     showThumbnails();
   };
+  back_button.disabled = false;
 }
 
 function initRange(img) {
@@ -150,7 +151,7 @@ function initRange(img) {
     var polyfill = q('.fd-slider-wrapper');
     
     console.info('<input type="range"> not supported, using polyfill.');
-    polyfill.style.marginTop = '30px';
+    polyfill.style.top = '30px';
     polyfill.style.display = 'block';
   }
 }

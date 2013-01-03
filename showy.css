@@ -10,7 +10,7 @@ body {
   overflow-x: hidden;
 }
 
-#picker {
+#topbar {
   position: fixed;
   width: 100%;
   height: 20px;
@@ -35,12 +35,21 @@ body {
 input[type=file] {
   color: black;
   border-color: #000;
-  width: 100px;
 }
 
 #back {
   float: left;
+  height: 20px;
   margin-right: 15px;
+}
+
+button {
+  border-radius: 12px;
+  border: solid 1px gray;
+  background: #ededed;
+  background: linear-gradient(top, #ededed, #cbcbcb);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, .2);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, .8);
 }
 
 #info {
@@ -150,4 +159,8 @@ abbr {
 
 .fd-slider-wrapper {
   display: none;
+}
+
+.fd-slider {
+  height: 10px !important;
 }
