@@ -53,7 +53,7 @@ function showThumbnails() {
   prev_button.hidden = true;
   next_button.hidden = true;
   back_button.hidden = true;
-  
+
   resetBodyDimensions();
   addThumbnailsKeyBindings();
 
@@ -412,7 +412,11 @@ function scaleImage(img, scale_ratio) {
   body.style.overflowY = (img_current.height > screen_height - 50) ? 'scroll' : 'hidden';
 }
 
-window.onload = function () {
+function init() {
+  if (Modernizr.prefixed('cancelFullScreen', document)) {
+    fullscreen_button.hidden = false;
+  }
+  
   range.onchange = function () {
     scaleImage(q('#preview > img'), range.value / 100);
   };
@@ -452,6 +456,10 @@ window.onload = function () {
   dropzone.style.width = window.innerWidth + 'px';
   dropzone.style.height = document.body.scrollHeight + 'px';
   */
+}
+
+window.onload = function () {
+  init();
 };
 
 }());
