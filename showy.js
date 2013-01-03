@@ -217,6 +217,8 @@ function getMetadata(img) {
 }
 
 function getImage(file) {
+  window.URL = window.URL || window.webkitURL;
+  
   if (!window.URL) {
     // FIXME
     alert('Blob URLs not supported, bailing out.');
