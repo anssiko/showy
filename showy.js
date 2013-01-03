@@ -145,6 +145,7 @@ function initBack() {
 }
 
 function initRange(img) {
+  range.value = 100;
   img.style.width = '100%';
   info.textContent = '';
 
