@@ -393,18 +393,15 @@ function getCurrentImageSize(img, zoom_ratio, screen_width, screen_height) {
 function transformImage(img, scale_ratio, rotate_deg) {
   var screen_width = window.innerWidth,
       screen_height = window.innerHeight,
-      rotate_deg = parseInt(rotate_deg, 10);
+      rotate_deg = parseInt(rotate_deg, 10),
+      rotated = (rotate_deg !== 0);
       
   var img_current = getCurrentImageSize(img, scale_ratio, screen_width, screen_height);
+  
   info.textContent = Math.round(scale_ratio * 100) + ' % (' +
                      Math.round(img_current.width, 10) + 'x' +
                      Math.round(img_current.height, 10) + ')';
-
-  var transform = Modernizr.prefixed('transform');
-  var transformOriginX = Modernizr.prefixed('transformOriginX');
-  var transformOriginY = Modernizr.prefixed('transformOriginY');
-  var rotated = (rotate_deg !== 0);
-
+                     
   if (rotated) {
     var img_prev_width = img_current.width;
     var img_prev_height = img_current.height;
@@ -412,9 +409,9 @@ function transformImage(img, scale_ratio, rotate_deg) {
     img_current.height = img_prev_width;
   }
 
-  img.style[transformOriginX] = (!rotated && img_current.width > screen_width) ? '0' : '50%';
-  img.style[transformOriginY] = (!rotated && img_current.height > screen_height) ? '0' : '50%';
-  img.style[transform] = 'scale(' + scale_ratio + ') rotate(' + rotate_deg + 'deg)';
+  img.style[Modernizr.prefixed('transformOriginX')] = (!rotated && img_current.width > screen_width) ? '0' : '50%';
+  img.style[Modernizr.prefixed('transformOriginY')] = (!rotated && img_current.height > screen_height) ? '0' : '50%';
+  img.style[Modernizr.prefixed('transform')] = 'scale(' + scale_ratio + ') rotate(' + rotate_deg + 'deg)';
 
   body.style.overflowX = (img_current.width > screen_width) ? 'scroll' : 'hidden';
   body.style.overflowY = (img_current.height > screen_height - 50) ? 'scroll' : 'hidden';
@@ -457,7 +454,7 @@ function init() {
                        0 : parseInt(this.dataset.deg, 10) + 90;
 
     transformImage(q('#preview > img'), range.value / 100, rotate.dataset.deg);
-    this.style.webkitTransform = 'rotate(' + rotate.dataset.deg + 'deg)';
+    this.style[Modernizr.prefixed('transform')] = 'rotate(' + rotate.dataset.deg + 'deg)';
   };
   
   // FIXME - dropzone disabled
