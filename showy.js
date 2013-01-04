@@ -60,7 +60,7 @@ function showThumbnails() {
   addThumbnailsKeyBindings();
 
   if (preview_img) {
-    var focused_index = getFocused().dataset.index;
+    var focused_index = getFocused().getAttribute('data-index');
     minimizeImage(preview_img);
     setFocus(qa('#thumbnails > img')[focused_index]);
     info.hidden = true;
@@ -110,7 +110,7 @@ function enlargeImage(img) {
 }
 
 function minimizeImage(img) {
-  var next_img = q('img[data-index="' + (parseInt(img.dataset.index, 10) + 1) + '"]');
+  var next_img = q('img[data-index="' + (parseInt(img.getAttribute('data-index'), 10) + 1) + '"]');
   var prop = Modernizr.prefixed('transform');
 
   img.style[prop] = 'scale(1)';
@@ -125,14 +125,14 @@ function minimizeImage(img) {
 function setFocus(img) {
   if (img) {
     img.style.opacity = 0.25;
-    img.dataset.focused = true;
+    img.setAttribute('data-focused', 'true');
   }
 }
 
 function unsetFocus(img) {
   if (img) {
     img.style.opacity = 1;
-    img.dataset.focused = false;
+    img.setAttribute('data-focused', 'false');
   }
 }
 
@@ -170,7 +170,7 @@ function setImageSizeToFitScreen(img) {
     img.style.opacity = 1;
   }, 0);
 
-  if (((img.dataset.height / img.dataset.width) * screen_width) > screen_height) {
+  if (((img.getAttribute('data-height') / img.getAttribute('data-width')) * screen_width) > screen_height) {
     setTimeout(function() {
       img.style.width = '';
       img.style.height = screen_height + 'px';
@@ -180,19 +180,19 @@ function setImageSizeToFitScreen(img) {
 
 function setResolution(img) {
   img.style.width = '';
-  if (!img.dataset.width) {
-    img.dataset.width = img.offsetWidth;
+  if (!img.getAttribute('data-width')) {
+    img.setAttribute('data-width', img.offsetWidth);
   }
   
-  if (!img.dataset.height) {
-    img.dataset.height = img.offsetHeight;
+  if (!img.getAttribute('data-height')) {
+    img.setAttribute('data-height', img.offsetHeight);
   }
   return img;
 }
 
 function initPrevNext() {
   var max_index = getMaxIndex(),
-      current_index = parseInt(q('#preview > img').dataset.index, 10);
+      current_index = parseInt(q('#preview > img').getAttribute('data-index'), 10);
   
   prev_button.disabled = false;
   next_button.disabled = false;
@@ -207,17 +207,17 @@ function initPrevNext() {
 }
 
 function setMetadata(img, file, num) {
-  img.dataset.index = num;
-  img.dataset.modified = file.lastModifiedDate;
-  img.dataset.name = file.name;
-  img.dataset.size = file.size;
+  img.setAttribute('data-index', num);
+  img.setAttribute('data-modified', file.lastModifiedDate);
+  img.setAttribute('data-name', file.name);
+  img.setAttribute('data-size', file.size);
   return img;
 }
 
 function getMetadata(img) {
-  return (parseInt(img.dataset.index, 10) + 1) + '/' + (getMaxIndex() + 1) + ' ' + img.dataset.name +
-         ' (' + img.dataset.width + 'x' + img.dataset.height +
-         ', ' + (Math.round(img.dataset.size / 100000)) / 10 + ' MB)';
+  return (parseInt(img.getAttribute('data-index'), 10) + 1) + '/' + (getMaxIndex() + 1) + ' ' + img.getAttribute('data-name') +
+         ' (' + img.getAttribute('data-width') + 'x' + img.getAttribute('data-height') +
+         ', ' + (Math.round(img.getAttribute('data-size') / 100000)) / 10 + ' MB)';
 }
 
 function getImage(file) {
@@ -242,9 +242,9 @@ function getImage(file) {
 
 function showPrevImage() {
   var current = q('#preview > img'),
-      prev = q('img[data-index="' + (parseInt(current.dataset.index, 10) - 1) + '"]');
+      prev = q('img[data-index="' + (parseInt(current.getAttribute('data-index'), 10) - 1) + '"]');
       
-  var prev_index = (prev !== null) ? (parseInt(prev.dataset.index, 10)) : 0;
+  var prev_index = (prev !== null) ? (parseInt(prev.getAttribute('data-index'), 10)) : 0;
   
   if (current && prev) {
     minimizeImage(current);
@@ -265,9 +265,9 @@ function showPrevImage() {
 
 function showNextImage() {
   var current = q('#preview > img'),
-      next = q('img[data-index="' + (parseInt(current.dataset.index, 10) + 1) + '"]');
+      next = q('img[data-index="' + (parseInt(current.getAttribute('data-index'), 10) + 1) + '"]');
       
-  var next_index = (next !== null) ? (parseInt(next.dataset.index, 10)) : 0;
+  var next_index = (next !== null) ? (parseInt(next.getAttribute('data-index'), 10)) : 0;
   
   if (current && next) {
     minimizeImage(current);
@@ -326,7 +326,7 @@ function addThumbnailsKeyBindings() {
         break;
       case 38: // up
         var focused = getFocused();
-        var above_index = parseInt(focused.dataset.index, 10) - 4;
+        var above_index = parseInt(focused.getAttribute('data-index'), 10) - 4;
         if (above_index < 0) return;
         var above_img = q('#thumbnails > img[data-index="' + above_index + '"]');
         setFocus(above_img);
@@ -340,7 +340,7 @@ function addThumbnailsKeyBindings() {
         break;
       case 40: // down
         var focused = getFocused();
-        var below_index = parseInt(focused.dataset.index, 10) + 4;
+        var below_index = parseInt(focused.getAttribute('data-index'), 10) + 4;
         if (below_index >= getMaxIndex()) return;
         var below_img = q('#thumbnails > img[data-index="' + below_index + '"]');
         setFocus(below_img);
@@ -359,10 +359,10 @@ function toggleFullscreen(el) {
 }
 
 function getCurrentImageSize(img, zoom_ratio, screen_width, screen_height) {
-  var img_ratio = (img.dataset.width / img.dataset.height),
+  var img_ratio = img.getAttribute('data-width') / img.getAttribute('data-height'),
       screen_ratio = screen_width / screen_height,
-      img_width = img.dataset.width,
-      img_height = img.dataset.height,
+      img_width = img.getAttribute('data-width'),
+      img_height = img.getAttribute('data-height'),
       img_current_width, img_current_height;
       
   var fit_to_width = (img_width < screen_width);
@@ -423,7 +423,7 @@ function init() {
   }
   
   range.onchange = function () {
-    transformImage(q('#preview > img'), range.value / 100, rotate.dataset.deg);
+    transformImage(q('#preview > img'), range.value / 100, rotate.getAttribute('data-deg'));
   };
 
   input.onchange = function () {
@@ -444,17 +444,17 @@ function init() {
   
   rotate_button.onclick = function () {
     var img = q('#preview > img'),
-        prev_width = img.dataset.width,
-        prev_height = img.dataset.height;
+        prev_width = img.getAttribute('data-width'),
+        prev_height = img.getAttribute('data-height');
     
-    img.dataset.width = prev_height;
-    img.dataset.height = prev_width;
+    img.setAttribute('data-width', prev_height);
+    img.setAttribute('data-height', prev_width);
     
-    this.dataset.deg = (parseInt(this.dataset.deg, 10) === 270) ?
-                       0 : parseInt(this.dataset.deg, 10) + 90;
+    this.setAttribute('data-deg', (parseInt(this.getAttribute('data-deg'), 10) === 270) ?
+                      0 : parseInt(this.getAttribute('data-deg'), 10) + 90);
 
-    transformImage(q('#preview > img'), range.value / 100, rotate.dataset.deg);
-    this.style[Modernizr.prefixed('transform')] = 'rotate(' + rotate.dataset.deg + 'deg)';
+    transformImage(q('#preview > img'), range.value / 100, rotate.getAttribute('data-deg'));
+    this.style[Modernizr.prefixed('transform')] = 'rotate(' + rotate.getAttribute('data-deg') + 'deg)';
   };
   
   // FIXME - dropzone disabled
