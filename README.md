@@ -3,16 +3,20 @@
 *Showy is an image viewer on the Web for viewing your local files online.*
 
 Showy uses some of the latest features of the web platform such as File API,
-Blob URLs, &lt;input type=range&gt;, DnD, CSS Tranforms, and others. It has been
-developed with Chrome 24, and it may not work well in other browsers yet. The
+Blob URLs, &lt;input type=range&gt;, DnD, CSS Transforms, and others. The
 app is almost fully keyboard-driven in addition to usual touch and mouse
 controls.
 
 Showy, your flamboyant image viewer on the Web.
 
+## Browser support
+
+Tested with Chrome 24, Firefox 17, Safari 6, and Internet Explorer 10.
+May work with earlier versions of Chrome and Firefox, and some other
+modern browsers too.
+
 ## Backlog
 
-* test with other browsers than Chrome
 * Blob URL workaround for unsupported browsers
 * key bindings for zoom
 * scroll thumbnails view to focused element
