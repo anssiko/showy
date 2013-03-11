@@ -23,7 +23,7 @@ modern browsers too.
 * test DnD
 * make thumbnails square shaped (if image ratios differ)
 * load images in batches to display them progressively
-* extract and show EXIF metadata
+* extract and show EXIF metadata using [rawson.js](http://dev.tag.is/rawson.js/)
 * [DONE] use Modernizr for all feature detection
 * [DONE] polyfill &lt;input type=range&gt;
 * [DONE] adjust zooming behavior
